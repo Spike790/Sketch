@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Login</title>
+    <!-- Import Google Font 'Press Start 2P' -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Reset */
+        body, html {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            height: 100%;
+        }
+
+        body {
+            background-color: #000000;
+            color: #FF69B4; /* Hot Pink */
+            font-family: 'Press Start 2P', cursive;
+            display: flex;
+            flex-direction: column; 
+            justify-content: flex-start; 
+            align-items: center; 
+            min-height: 100vh;
+            padding-bottom: 3rem; 
+            text-shadow: 0 0 5px #FF69B4, 0 0 10px #FF69B4;
+            image-rendering: pixelated; 
+        }
+
+        .header-image {
+            width: 100%; 
+        }
+        .header-image img {
+            width: 100%; 
+            height: auto;
+            display: block; 
+        }
+
+        /* กล่องคอนเทนเนอร์หลัก */
+        .container {
+            padding: 2rem;
+            border-radius: 8px;
+            background-color: #0a0a0a;
+            width: 90%;
+            max-width: 400px;
+            margin-top: 0.5rem; 
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #FFFFFF; 
+        }
+
+        /* สไตล์ของฟอร์ม */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 7. (แก้ไข) สไตล์สำหรับช่อง username (text) ปกติ */
+        input[type="text"] {
+            background-color: #111;
+            border: 2px solid #FF69B4;
+            color: #FFFFFF; 
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            width: 100%; /* (เพิ่ม) ให้เต็มความกว้าง */
+            box-sizing: border-box; /* (เพิ่ม) เพื่อคุม padding */
+        }
+        
+        /* (ใหม่) สไตล์สำหรับช่อง password (ทั้ง text และ password) */
+        input[type="password"],
+        input[type="text"].password-input { /* ใช้ class .password-input เพื่อระบุ */
+            background-color: #111;
+            border: 2px solid #FF69B4;
+            color: #FFFFFF;
+            padding: 0.75rem;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+            padding-right: 4.5rem; /* (ใหม่) เพิ่มที่ว่างด้านขวาสำหรับปุ่ม SHOW/HIDE */
+        }
+
+        input::placeholder {
+            color: #8a3a60;
+        }
+
+        input:focus {
+            outline: none;
+        }
+        
+        /* (ใหม่) Wrapper สำหรับช่อง Password */
+        .password-wrapper {
+            position: relative;
+            margin-bottom: 1rem; /* ย้าย margin-bottom จาก input มาไว้ที่นี่ */
+        }
+        
+        /* (ใหม่) สไตล์ปุ่ม SHOW/HIDE */
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.7rem; /* (ปรับขนาด) */
+            cursor: pointer;
+            color: #FF69B4; 
+            user-select: none; /* ป้องกันการเผลอเลือกข้อความ */
+            
+            /* (ใหม่) ซ่อนปุ่มไว้เป็นค่าเริ่มต้น */
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        
+        /* (ใหม่) คลาสสำหรับแสดงปุ่ม */
+        .password-toggle.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .password-toggle:hover {
+            color: #FFFFFF;
+        }
+
+
+        /* สไตล์ของปุ่ม */
+        button {
+            background-color: #FF69B4;
+            color: #000000;
+            border: none;
+            padding: 0.75rem;
+            font-family: 'Press Start 2P', cursive;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #FFFFFF;
+            color: #FF69B4;
+            box-shadow: 0 0 15px #FFFFFF;
+        }
+
+        /* ลิงก์สำหรับสลับฟอร์ม */
+        .toggle-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .toggle-link:hover {
+            color: #FFFFFF;
+        }
+
+        /* กล่องข้อความสำหรับแจ้งเตือน */
+        #message {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.7rem;
+            min-height: 1.2rem;
+            line-height: 1.2;
+        }
+
+        /* (แก้ไข) สีข้อความสำหรับ Error */
+        #message.error {
+            color: #FF1493; /* DeepPink */
+        }
+        
+        /* (แก้ไข) สีข้อความสำหรับ Success (ตอนนี้ไม่ได้ใช้แล้ว แต่เก็บไว้เผื่อ) */
+        #message.success {
+            color: #9932CC; /* Purple (DarkOrchid) */
+        }
+
+        /* คลาสสำหรับซ่อนฟอร์มที่ไม่ได้ใช้งาน */
+        .hidden {
+            display: none;
+        }
+
+        /* --- (ใหม่) สไตล์หน้าจอ Loading --- */
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000000;
+            display: none; /* ซ่อนไว้เป็นค่าเริ่มต้น */
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            font-family: 'Press Start 2P', cursive;
+            color: #FF69B4; /* Hot Pink */
+            font-size: 1.5rem;
+            text-shadow: 0 0 5px #FF69B4, 0 0 10px #FF69B4;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- รูปภาพด้านบนสุด -->
+    <div class="header-image">
+        <a href="https://ibb.co/DHHdmXWv"><img src="https://i.ibb.co/PvvkJpjP/53a0ea23db358891f2f346ac47c4fc6c.jpg" alt="Retro Style Art" border="0"></a>
+    </div>
+
+    <div class="container">
+        <!-- ฟอร์ม Login -->
+        <form id="loginForm">
+            <h1>LOGIN</h1>
+            <label for="loginUser">USERNAME:</label>
+            <!-- (แก้ไข) เปลี่ยน placeholder เป็น player0 -->
+            <input type="text" id="loginUser" placeholder="player0" required>
+            
+            <label for="loginPassword">PASSWORD:</label>
+            <!-- (ใหม่) เพิ่ม Wrapper และปุ่ม Toggle -->
+            <div class="password-wrapper">
+                <input type="password" id="loginPassword" placeholder="******" required>
+                <span class="password-toggle" data-target="loginPassword">SHOW</span>
+            </div>
+            
+            <button type="submit">LOGIN</button>
+        </form>
+
+        <!-- ฟอร์ม Signup (ซ่อนไว้ตอนเริ่ม) -->
+        <form id="signupForm" class="hidden">
+            <h1>SIGN UP</h1>
+            <label for="signupUser">USERNAME:</label>
+            <input type="text" id="signupUser" placeholder="new.player" required>
+            
+            <label for="signupPassword">PASSWORD:</label>
+            <!-- (ใหม่) เพิ่ม Wrapper และปุ่ม Toggle -->
+            <div class="password-wrapper">
+                <input type="password" id="signupPassword" placeholder="min. 6 chars" required>
+                <span class="password-toggle" data-target="signupPassword">SHOW</span>
+            </div>
+            
+            <button type="submit">CREATE ACCOUNT</button>
+        </form>
+
+        <!-- กล่องข้อความแจ้งเตือน -->
+        <div id="message"></div>
+
+        <!-- ลิงก์สลับฟอร์ม -->
+        <p class="toggle-link" id="toggleToSignup">Need an account? Sign Up</p>
+        <p class="toggle-link hidden" id="toggleToLogin">Have an account? Login</p>
+    </div>
+
+    <!-- (ใหม่) หน้าจอ Loading -->
+    <div id="loadingOverlay">
+        <p>Loading...</p>
+    </div>
+
+    <!-- Firebase SDK Imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getDatabase, 
+            ref, 
+            set 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+        // (หมายเหตุ: นี่คือคีย์ของคุณที่ให้มาในโค้ดเดิม)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6oQ8jvYHZVfWRoElG7c2pdqip0_NyI8I",
+            authDomain: "style-94d9c.firebaseapp.com",
+            databaseURL: "https://style-94d9c-default-rtdb.firebaseio.com",
+            projectId: "style-94d9c",
+            storageBucket: "style-94d9c.firebasestorage.app",
+            messagingSenderId: "134016548301",
+            appId: "1:134016548301:web:0ca9b7c387f426d0dc9884",
+            measurementId: "G-29Y5Y00SFC"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        
+        // เลือก DOM Elements
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const messageEl = document.getElementById('message');
+        const toggleToSignup = document.getElementById('toggleToSignup');
+        const toggleToLogin = document.getElementById('toggleToLogin');
+        
+        // (ใหม่) เลือกช่อง Username
+        const loginUser = document.getElementById('loginUser');
+        const signupUser = document.getElementById('signupUser');
+        
+        // (ใหม่) เลือกช่อง Password
+        const loginPasswordInput = document.getElementById('loginPassword');
+        const signupPasswordInput = document.getElementById('signupPassword');
+        
+        // (ใหม่) เลือกปุ่ม Toggle Password ทั้งหมด
+        const passwordToggles = document.querySelectorAll('.password-toggle');
+
+        // (ใหม่) เลือกหน้าจอ Loading
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        // (ใหม่) ฟังก์ชันสำหรับแสดง/ซ่อนหน้าจอ Loading
+        function showLoading() {
+            loadingOverlay.style.display = 'flex';
+        }
+        function hideLoading() {
+            loadingOverlay.style.display = 'none';
+        }
+
+        // ฟังก์ชันสำหรับแสดงข้อความแจ้งเตือน (ตอนนี้ใช้สำหรับ Error เท่านั้น)
+        function showMessage(message, type = 'error') {
+            messageEl.textContent = message;
+            messageEl.className = type;
+        }
+
+        // --- (ใหม่) ฟังก์ชันสำหรับกรอง Username ---
+        function validateUsernameInput(e) {
+            // ค้นหาตัวอักษรใดๆ ที่ "ไม่" ใช่ a-z, A-Z, หรือ 0-9
+            const regex = /[^a-zA-Z0-9]/g;
+            let value = e.target.value.replace(regex, ''); // ลบตัวอักษรที่ไม่ต้องการ
+
+            // (ใหม่) จำกัดความยาวไม่เกิน 7 ตัวอักษร
+            if (value.length > 7) {
+                value = value.substring(0, 7); // ตัดส่วนที่เกินทิ้ง
+            }
+            
+            // ตั้งค่าค่าที่กรองแล้วกลับไปที่ input
+            e.target.value = value;
+        }
+        
+        // --- (ใหม่) ฟังก์ชันสำหรับแสดง/ซ่อนปุ่ม toggle ---
+        function handlePasswordInput(e) {
+            const input = e.target;
+            // หาปุ่ม toggle ที่อยู่ใน .password-wrapper เดียวกัน
+            const wrapper = input.parentElement;
+            const toggle = wrapper.querySelector('.password-toggle');
+    
+            if (input.value.length > 0) {
+                toggle.classList.add('visible'); // แสดงปุ่ม
+            } else {
+                toggle.classList.remove('visible'); // ซ่อนปุ่ม
+            }
+        }
+
+        // --- Event Listeners ---
+
+        // 1. สลับไปหน้า Signup
+        toggleToSignup.addEventListener('click', () => {
+            loginForm.classList.add('hidden');
+            toggleToSignup.classList.add('hidden');
+            
+            signupForm.classList.remove('hidden');
+            toggleToLogin.classList.remove('hidden');
+            
+            // (ใหม่) เคลียร์ฟอร์ม login
+            loginUser.value = '';
+            loginPasswordInput.value = '';
+            // (ใหม่) ซ่อนปุ่ม toggle ของ login (โดยการ trigger event)
+            loginPasswordInput.dispatchEvent(new Event('input'));
+            // (ใหม่) คืนค่าปุ่ม toggle เป็น SHOW
+            const loginToggle = loginPasswordInput.parentElement.querySelector('.password-toggle');
+            if (loginPasswordInput.type === 'text') {
+                loginPasswordInput.type = 'password';
+                loginPasswordInput.classList.remove('password-input');
+                loginToggle.textContent = 'SHOW';
+            }
+            
+            showMessage(''); 
+        });
+
+        // 2. สลับไปหน้า Login
+        toggleToLogin.addEventListener('click', () => {
+            signupForm.classList.add('hidden');
+            toggleToLogin.classList.add('hidden');
+
+            loginForm.classList.remove('hidden');
+            toggleToSignup.classList.remove('hidden');
+            
+            // (ใหม่) เคลียร์ฟอร์ม signup
+            signupUser.value = '';
+            signupPasswordInput.value = '';
+            // (ใหม่) ซ่อนปุ่ม toggle ของ signup (โดยการ trigger event)
+            signupPasswordInput.dispatchEvent(new Event('input'));
+            // (ใหม่) คืนค่าปุ่ม toggle เป็น SHOW
+            const signupToggle = signupPasswordInput.parentElement.querySelector('.password-toggle');
+            if (signupPasswordInput.type === 'text') {
+                signupPasswordInput.type = 'password';
+                signupPasswordInput.classList.remove('password-input');
+                signupToggle.textContent = 'SHOW';
+            }
+            
+            showMessage(''); 
+        });
+
+        // 3. จัดการการ "Signup"
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+            
+            loginForm.classList.add('hidden');
+            signupForm.classList.add('hidden');
+            toggleToSignup.classList.add('hidden');
+            toggleToLogin.classList.add('hidden');
+
+            const username = signupUser.value; // (ใช้ .value จากตัวแปรที่เลือกไว้แล้ว)
+            const password = document.getElementById('signupPassword').value;
+            
+            const email = username + '@style.app';
+
+            // (แก้ไข) แสดงหน้า Loading
+            showLoading();
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user; 
+                
+                if (user) {
+                    try {
+                        await set(ref(db, 'users/' + user.uid), {
+                            username: username, 
+                            email_used: email     
+                        });
+                        
+                        // (แก้ไข) ไม่ต้องแสดง Success ที่นี่ หน้า Loading จะค้างไว้
+                        // showMessage('Success! Redirecting...', 'success');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'main.html';
+                        }, 2000); 
+
+                    } catch (dbError) {
+                        console.error("Database write error: ", dbError);
+                        // (แก้ไข) ถ้า Error ให้ซ่อน Loading และแสดงข้อความ
+                        hideLoading();
+                        showMessage('Account created, but DB save failed.', 'error');
+                    }
+                }
+
+            } catch (error) {
+                // (แก้ไข) ถ้า Error ให้ซ่อน Loading และแสดงข้อความ
+                hideLoading();
+                showMessage(error.message, 'error');
+                
+                console.error("Signup Error:", error.code, error.message);
+                // (เพิ่ม) ถ้า error ให้แสดงฟอร์มกลับมา
+                signupForm.classList.remove('hidden');
+                toggleToLogin.classList.remove('hidden');
+            }
+        });
+
+        // 4. จัดการการ "Login"
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+
+            loginForm.classList.add('hidden');
+            signupForm.classList.add('hidden');
+            toggleToSignup.classList.add('hidden');
+            toggleToLogin.classList.add('hidden');
+
+            const username = loginUser.value; // (ใช้ .value จากตัวแปรที่เลือกไว้แล้ว)
+            const password = document.getElementById('loginPassword').value;
+
+            const email = username + '@style.app';
+
+            // (แก้ไข) แสดงหน้า Loading
+            showLoading();
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+
+                // (แก้ไข) ไม่ต้องแสดง Success ที่นี่ หน้า Loading จะค้างไว้
+                // showMessage('Success! Redirecting...', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 2000); 
+
+            } catch (error) {
+                // (แก้ไข) ถ้า Error ให้ซ่อน Loading และแสดงข้อความ
+                hideLoading();
+                showMessage(error.message, 'error');
+                
+                console.error("Login Error:", error.code, error.message);
+                // (เพิ่ม) ถ้า error ให้แสดงฟอร์มกลับมา
+                loginForm.classList.remove('hidden');
+                toggleToSignup.classList.remove('hidden');
+            }
+        });
+        
+        // --- (ใหม่) เพิ่ม Event Listeners สำหรับ Username ---
+        loginUser.addEventListener('input', validateUsernameInput);
+        signupUser.addEventListener('input', validateUsernameInput);
+        
+        // --- (ใหม่) เพิ่ม Event Listeners สำหรับช่อง Password ---
+        loginPasswordInput.addEventListener('input', handlePasswordInput);
+        signupPasswordInput.addEventListener('input', handlePasswordInput);
+        
+        // --- (ใหม่) เพิ่ม Event Listeners สำหรับปุ่ม Toggle Password ---
+        passwordToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                // หา ID ของ input ที่ปุ่มนี้คุมอยู่ จาก attribute `data-target`
+                const targetId = toggle.dataset.target;
+                const passwordInput = document.getElementById(targetId);
+
+                if (passwordInput.type === 'password') {
+                    // ถ้าเป็น 'password' ให้เปลี่ยนเป็น 'text'
+                    passwordInput.type = 'text';
+                    passwordInput.classList.add('password-input'); // เพิ่ม class styling
+                    toggle.textContent = 'HIDE'; // เปลี่ยนปุ่มเป็น HIDE
+                } else {
+                    // ถ้าเป็น 'text' ให้เปลี่ยนกลับเป็น 'password'
+                    passwordInput.type = 'password';
+                    passwordInput.classList.remove('password-input'); // ลบ class styling
+                    toggle.textContent = 'SHOW'; // เปลี่ยนปุ่มเป็น SHOW
+                }
+           });
+        });
+
+    </script>
+</body>
+</html>
